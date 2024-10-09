@@ -11,9 +11,11 @@ public class BrowserManager {
     private Playwright playwright;
     private Browser browser;
 
+
     private BrowserManager() {
         playwright = Playwright.create();
         browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+
     }
 
     public static BrowserManager getInstance() {

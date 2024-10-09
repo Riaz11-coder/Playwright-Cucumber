@@ -1,4 +1,4 @@
 package enums;
 
-public class Context {
+public enum Context {
 }

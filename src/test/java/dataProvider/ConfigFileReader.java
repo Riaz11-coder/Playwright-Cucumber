@@ -1,5 +1,8 @@
 package dataProvider;
 
+import enums.BrowserType;
+import enums.EnvironmentType;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -38,6 +41,24 @@ public class ConfigFileReader {
         String GoogleUrl = properties.getProperty("GoogleUrl");
         if(GoogleUrl != null) return GoogleUrl;
         else throw new RuntimeException("GoogleUrl not specified in the Configuration.properties file.");
+    }
+
+    public BrowserType getBrowser() {
+        String browserName = properties.getProperty("browser");
+        if(browserName == null || browserName.equals("chrome")) return BrowserType.CHROME;
+        else if(browserName.equals("firefox")) return BrowserType.FIREFOX;
+        else if(browserName.equals("edge")) return BrowserType.EDGE;
+        else if(browserName.equals("remote_chrome")) return BrowserType.REMOTECHROME;
+        else if(browserName.equals("remote_firefox")) return BrowserType.REMOTEFIREFOX;
+        else throw new RuntimeException("Browser Name Key value in Configuration.properties is not matched : " + browserName);
+    }
+
+    public EnvironmentType getEnvironment() {
+        String environmentName = properties.getProperty("environment");
+        if(environmentName == null || environmentName.equalsIgnoreCase("local")) return EnvironmentType.LOCAL;
+        else if(environmentName.equals("remote")) return EnvironmentType.REMOTE;
+        else if(environmentName.equals("browserstack")) return EnvironmentType.BROWSERSTACK;
+        else throw new RuntimeException("Environment Type Key value in Configuration.properties is not matched : " + environmentName);
     }
 
 }
