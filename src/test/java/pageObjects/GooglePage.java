@@ -2,16 +2,19 @@ package pageObjects;
 
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Page;
+import dataProvider.ConfigFileReader;
+import managers.FileReaderManager;
+import managers.PageObjectManager;
 import org.junit.jupiter.api.Assertions;
 
-public class GooglePage extends BasePage{
+public class GooglePage extends PageObjectManager {
 
     public GooglePage(Page page) {
         super(page);
     }
 
     public void navigateToGoogleHomePage() {
-        page.navigate("https://www.google.com");
+        page.navigate(FileReaderManager.getInstance().getConfigReader().getGoogleUrl());
     }
 
     public String getPageTitle() {
