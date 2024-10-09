@@ -50,18 +50,19 @@ public class BrowserManager {
             case CHROME:
                 return playwright.chromium().launch(new com.microsoft.playwright.BrowserType.LaunchOptions().setHeadless(false));
             case FIREFOX:
-                return playwright.firefox().launch();
+                return playwright.firefox().launch(new com.microsoft.playwright.BrowserType.LaunchOptions().setHeadless(false));
             case SAFARI:
-                return playwright.webkit().launch();
+                return playwright.webkit().launch(new com.microsoft.playwright.BrowserType.LaunchOptions().setHeadless(false));
             case EDGE:
                 try {
-                    return playwright.chromium().launch(new com.microsoft.playwright.BrowserType.LaunchOptions());
+                    return playwright.chromium().launch(new com.microsoft.playwright.BrowserType.LaunchOptions().setChannel("msedge").setHeadless(false));
                 }catch(PlaywrightException e){
                     System.out.println("if Edge not available falling back to Chrome");
                 }
             default:
                 throw new IllegalArgumentException("Unsupported browser type for local environment: " + browserType);
         }
+
     }
 
     private Browser createRemoteBrowser(BrowserType browserType) {
