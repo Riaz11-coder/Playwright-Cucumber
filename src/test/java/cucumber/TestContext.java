@@ -2,6 +2,7 @@ package cucumber;
 
 import managers.BrowserManager;
 import com.microsoft.playwright.Page;
+import managers.FileReaderManager;
 import managers.PageObjectManager;
 import pageObjects.GooglePage;
 
@@ -14,7 +15,7 @@ public class TestContext {
 
     public TestContext() {
         browserManager = BrowserManager.getInstance();
-        page = browserManager.createPage();
+        page = browserManager.createPage(FileReaderManager.getInstance().getConfigReader().getBrowser(), FileReaderManager.getInstance().getConfigReader().getEnvironment());
         pageObjectManager = new PageObjectManager(page);
         scenarioContext = new ScenarioContext();
     }
