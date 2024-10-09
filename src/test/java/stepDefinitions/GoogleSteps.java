@@ -1,6 +1,7 @@
 package stepDefinitions;
 
 import com.microsoft.playwright.Page;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -18,16 +19,17 @@ public class GoogleSteps {
     private Page page;
     private GooglePage googlePage;
 
-    @BeforeAll
-    static void setUp() {
-        browserManager = BrowserManager.getInstance();
-    }
+    @Before
+    public void setUp() {
 
-    @BeforeEach
-    void createContext() {
+        if(browserManager == null) {
+            browserManager = BrowserManager.getInstance();
+        }
         page = browserManager.createPage();
         googlePage = new GooglePage(page);
     }
+
+
 
     @Given("I navigate to Google search page")
     public void i_navigate_to_google_search_page() {
