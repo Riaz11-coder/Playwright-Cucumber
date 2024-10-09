@@ -4,7 +4,6 @@ import managers.BrowserManager;
 import com.microsoft.playwright.Page;
 import managers.FileReaderManager;
 import managers.PageObjectManager;
-import pageObjects.GooglePage;
 
 public class TestContext {
     private static volatile TestContext instance;
@@ -41,7 +40,11 @@ public class TestContext {
     public BrowserManager getBrowserManager() {return browserManager;
     }
 
-    public Page getPage() {return page;
+    public Page getPage() {
+        if(page == null || page.isClosed()) {
+            page = browserManager.createPage(FileReaderManager.getInstance().getConfigReader().getBrowser(), FileReaderManager.getInstance().getConfigReader().getEnvironment());
+        }
+        return page;
     }
 
     public static void reset() {

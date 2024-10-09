@@ -14,6 +14,7 @@ public class GooglePage extends PageObjectManager {
     }
 
     public void navigateToGoogleHomePage() {
+        page.waitForLoadState();
         page.navigate(FileReaderManager.getInstance().getConfigReader().getGoogleUrl());
     }
 

@@ -37,15 +37,6 @@ public class ConfigFileReader {
         return properties.getProperty(keyWord);
     }
 
-    public long getWaitTime() {
-        String waitTime = properties.getProperty("waitTime");
-        if (waitTime != null) {
-            return Long.parseLong(waitTime);
-        } else {
-            throw new RuntimeException("waitTime not specified in the Configuration.properties file.");
-        }
-    }
-
     public String getGoogleUrl() {
         String GoogleUrl = properties.getProperty("GoogleUrl");
         if(GoogleUrl != null) return GoogleUrl;

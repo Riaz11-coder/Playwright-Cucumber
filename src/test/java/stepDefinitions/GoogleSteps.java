@@ -5,16 +5,19 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import pageObjects.GooglePage;
+import utilities.BrowserUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GoogleSteps {
      TestContext testContext;
      GooglePage googlePage;
+     BrowserUtils browserUtils;
 
     public GoogleSteps(){
         testContext = TestContext.getInstance();
         googlePage = testContext.getPageObjectManager().getGooglePage();
+        browserUtils = testContext.getPageObjectManager().getBrowserUtils();
     }
 
     @Given("I navigate to Google search page")
