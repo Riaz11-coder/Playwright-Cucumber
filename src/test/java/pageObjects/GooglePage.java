@@ -27,7 +27,6 @@ public class GooglePage extends PageObjectManager {
         page.waitForLoadState();
         GoogleSearchInput.fill(query);
         GoogleSearchInput.press("Enter");
-        page.waitForLoadState();
 
         // Wait for the first search result to be visible
         firstSearchableResult.waitFor();

@@ -5,11 +5,13 @@ import cucumber.TestContext;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import pageObjects.GooglePage;
 import utilities.BrowserUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+@Execution(ExecutionMode.CONCURRENT)
 public class GoogleSteps {
      TestContext testContext;
      GooglePage googlePage;

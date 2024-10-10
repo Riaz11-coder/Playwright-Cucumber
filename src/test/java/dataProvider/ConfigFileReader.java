@@ -61,4 +61,12 @@ public class ConfigFileReader {
         else throw new RuntimeException("Environment Type Key value in Configuration.properties is not matched : " + environmentName);
     }
 
+    // Method to check if the browser should be launched in headless mode
+    public boolean isHeadlessMode() {
+        String headless = properties.getProperty("headless");
+        // Return true if the value is "true", otherwise false
+        return Boolean.parseBoolean(headless);
+    }
+
+
 }

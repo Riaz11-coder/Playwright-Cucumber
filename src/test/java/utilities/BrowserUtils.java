@@ -34,7 +34,7 @@ public class BrowserUtils {
         Page page = testContext.getPage();
         if(page != null && !page.isClosed()){
             byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
-            scenario.attach(screenshot, "image/png", "Step Screenshot");
+            scenario.attach(screenshot, "image/png", page.title());
         } else {
             System.out.println("Unable to take screenshot: Page is null or closed");
         }

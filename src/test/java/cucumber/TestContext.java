@@ -51,6 +51,7 @@ public class TestContext {
         synchronized (TestContext.class) {
             if (instance != null) {
                 instance.cleanUp();
+                instance.getScenarioContext().clearContext(); // Clear context on reset
                 instance = null;
             }
         }

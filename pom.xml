@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.8.2</version>
+            <version>5.11.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -115,7 +115,7 @@
                                 <goal>generate</goal>
                             </goals>
                             <configuration>
-                                <projectName>Cucumber_Selenium</projectName>
+                                <projectName>Playwright-Cucumber</projectName>
                                 <skip>false</skip>
                                 <outputDirectory>${project.build.directory}</outputDirectory>
                                 <inputDirectory>${project.build.directory}</inputDirectory>
