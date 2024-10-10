@@ -35,4 +35,16 @@ public class GoogleSteps {
         assertEquals("Google", googlePage.getPageTitle());
     }
 
+    @When("I query the search bar")
+    public void iQueryTheSearchBar() {
+        googlePage.querySearch("Porsche");
+    }
+
+    @Then("I should be able to navigate to the Web page")
+    public void iShouldBeAbleToNavigateToTheWebPage() {
+        googlePage.searchPageTitleValidation("Porsche");
+    }
+
+
+
 }

@@ -1,20 +1,27 @@
 package pageObjects;
 
 import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-import dataProvider.ConfigFileReader;
 import managers.FileReaderManager;
 import managers.PageObjectManager;
 import org.junit.jupiter.api.Assertions;
 
 public class GooglePage extends PageObjectManager {
+    private final Locator searchInput;
+    private final Locator audiPageBtn;
+    private final Locator porschePageBtn;
 
     public GooglePage(Page page) {
+
         super(page);
+        this.searchInput = page.locator("textarea[name='q']");
+        this.audiPageBtn = page.locator("span.VuuXrf:has-text('Audi')");
+        this.porschePageBtn = page.locator("span.VuuXrf:has-text('Porsche')");
+
     }
 
     public void navigateToGoogleHomePage() {
-        page.waitForLoadState();
         page.navigate(FileReaderManager.getInstance().getConfigReader().getGoogleUrl());
     }
 
@@ -22,7 +29,17 @@ public class GooglePage extends PageObjectManager {
         return page.title();
     }
 
-
+    public void querySearch(String query){
+        page.waitForLoadState();
+        searchInput.fill(query);
+        searchInput.press("Enter");
+        page.waitForLoadState();
+        if(query.equals("Porsche")) {
+            Assertions.assertTrue(page.isVisible("text=Porsche"), "Porsche text should be visible");
+        } else if (query.equals("audi")) {
+            Assertions.assertTrue(page.isVisible("text=Audi USA"), "Audi USA text should be visible");
+        }
+    }
 
     public void searchGoogle(String query) {
         // Wait for the page to load completely
@@ -51,9 +68,18 @@ public class GooglePage extends PageObjectManager {
         if (query.equals("Porsche")) {
             Assertions.assertTrue(page.isVisible("text=Porsche"), "Porsche text should be visible");
         }
+
     }
 
-    public void clickFirstResult() {
+
+
+    public void searchPageTitleValidation(String query) {
         page.click("h3[class='LC20lb MBeuO DKV0Md']");
+
+        page.waitForLoadState();
+        String expectedPageTitle = query;
+        String actualPageTitle = page.title();
+        Assertions.assertEquals(expectedPageTitle,actualPageTitle);
+
     }
 }

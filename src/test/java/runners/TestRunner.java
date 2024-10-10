@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
                 "html:target/cucumber-report.html"},
         monochrome = true,
         dryRun = false,
-        tags = "@Google"
+        tags = "@GoogleSearch"
 )
 
 public class TestRunner {
