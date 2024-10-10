@@ -1,11 +1,18 @@
-Feature: Google test
-  @Google
-  Scenario: Testing Google
-    Given I navigate to Google search page
-    When  I check page title
-    Then  I have page title assertion
+Feature: Google Search Functionality
+
   @GoogleSearch
-    Scenario: Searching Google
-      Given I navigate to Google search page
-      When  I query the search bar
-      Then  I should be able to navigate to the Web page
+  Scenario Outline: Perform Google search and verify page navigation
+    Given I navigate to Google search page
+    When I check page title
+    Then I have page title assertion
+    When I query the search bar for "<query>"
+    Then I should be able to navigate to the Web page
+
+    Examples:
+    |query|
+    |Porsche|
+    |Audi|
+    |Tesla|
+    |Ferrari|
+
+

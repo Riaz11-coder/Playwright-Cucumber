@@ -1,7 +1,5 @@
 package stepDefinitions;
 
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
 import cucumber.TestContext;
 import io.cucumber.java.After;
 import io.cucumber.java.AfterStep;
