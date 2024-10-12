@@ -2,6 +2,7 @@ package dataProvider;
 
 import enums.BrowserType;
 import enums.EnvironmentType;
+import utilities.PasswordUtils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -35,6 +36,11 @@ public class ConfigFileReader {
     public String getProperty(String keyWord){
 
         return properties.getProperty(keyWord);
+    }
+
+    public String getDecryptedProperty(String keyWord) {
+        String encryptedPassword = getProperty(keyWord);
+        return PasswordUtils.decrypt(encryptedPassword);
     }
 
     public String getGoogleUrl() {
