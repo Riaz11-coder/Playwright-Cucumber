@@ -12,6 +12,7 @@ import utilities.BrowserUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 @Execution(ExecutionMode.CONCURRENT)
+
 public class GoogleSteps {
      TestContext testContext;
      GooglePage googlePage;

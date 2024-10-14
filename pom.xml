@@ -16,35 +16,38 @@
 
 
     <dependencies>
+
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
             <artifactId>playwright</artifactId>
             <version>1.47.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.11.2</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.11.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>7.20.1</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>7.11.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-jvm-deps</artifactId>
-            <version>1.0.6</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
-            <version>7.11.1</version>
-            <scope>test</scope>
+            <version>7.20.1</version>
         </dependency>
 
         <dependency>
@@ -54,19 +57,13 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-jvm</artifactId>
-            <version>6.8.1</version>
-            <type>pom</type>
-        </dependency>
-
     </dependencies>
+
+
 
     <build>
         <plugins>
             <plugin>
-                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
 
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -78,30 +75,19 @@
                </configuration>
 
             </plugin>
+
             <plugin>
-                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
 
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.0.0-M5</version>
-                <executions>
-                    <execution>
-                        <id>parallel-execution</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
                         <configuration>
                             <includes>
                                 <include>**/*TestRunner*.java</include>
                             </includes>
-
-                            <parallel>classesAndMethods</parallel>
-                            <useUnlimitedThreads>true</useUnlimitedThreads>
                         </configuration>
-                    </execution>
-                </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -113,16 +99,10 @@
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
-                        <configuration>
-                            <includes>
-                                <include>**/*TestRunner*.java</include>
-                            </includes>
-                            <parallel>methods</parallel>
-                            <useUnlimitedThreads>true</useUnlimitedThreads>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                     <groupId>net.masterthought</groupId>
                     <artifactId>maven-cucumber-reporting</artifactId>
@@ -136,15 +116,22 @@
                             </goals>
                             <configuration>
                                 <projectName>Playwright-Cucumber</projectName>
+                                <buildNumber>${project.version}</buildNumber>
                                 <skip>false</skip>
-                                <outputDirectory>${project.build.directory}</outputDirectory>
-                                <inputDirectory>${project.build.directory}</inputDirectory>
+                                <!-- Directories for reports -->
+                                <outputDirectory>${project.build.directory}/cucumber-reports</outputDirectory>
+                                <inputDirectory>${project.build.directory}/cucumber-reports/json</inputDirectory>
+
+                                <!-- Handling JSON Reports -->
                                 <jsonFiles>
-                                    <param>**/*.json</param>
+                                    <param>${project.build.directory}/cucumber-reports/json/cucumber-report*.json</param>
                                 </jsonFiles>
-                                <mergeFeaturesById>false</mergeFeaturesById>
+
+                                <!-- Advanced Configuration Options -->
+                                <mergeFeaturesById>false</mergeFeaturesById> <!-- Keep false for scenario outline clarity -->
                                 <mergeFeaturesWithRetest>false</mergeFeaturesWithRetest>
                                 <checkBuildResult>false</checkBuildResult>
+
                             </configuration>
                         </execution>
                     </executions>
