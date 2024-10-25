@@ -1,33 +1,21 @@
 package stepDefinitions;
 
-import cucumber.ScenarioContext;
-import cucumber.TestContext;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-import pageObjects.GooglePage;
-import utilities.BrowserUtils;
+import org.junit.jupiter.api.Assertions;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-@Execution(ExecutionMode.CONCURRENT)
 
-public class GoogleSteps {
-     TestContext testContext;
-     GooglePage googlePage;
-     BrowserUtils browserUtils;
-     ScenarioContext scenarioContext;
 
-    public GoogleSteps(){
-        testContext = TestContext.getInstance();
-        googlePage = testContext.getPageObjectManager().getGooglePage();
-        browserUtils = testContext.getPageObjectManager().getBrowserUtils();
-        scenarioContext = testContext.getScenarioContext();
-    }
+
+
+public class GoogleSteps extends BaseSteps{
+
 
     @Given("I navigate to Google search page")
-    public void i_navigate_to_google_search_page() {
+    public void i_navigate_to_google_search_page() throws InterruptedException {
         googlePage.navigateToGoogleHomePage();
     }
 
@@ -57,6 +45,48 @@ public class GoogleSteps {
         googlePage.searchPageTitleValidation(query);
     }
 
+    @Given("I open the Google homepage")
+    public void openGoogleHomepage() {
+        googlePage.navigateToGoogleHomePage();
+    }
 
+    @When("I search for {string}")
+    public void searchFor(String keyword) {
+        googlePage.googlePageSearch(keyword);
+        scenarioContext.setContext("SearchQuery", keyword);
+
+    }
+
+    @Then("I should see search results for {string}")
+    public void verifySearchResults(String keyword) {
+       String SearchQuery = scenarioContext.getContext("SearchQuery",String.class);
+       Assertions.assertEquals(keyword,SearchQuery);
+       googlePage.assertPageContent(keyword);
+
+
+    }
+
+    @Then("the page title should contain {string}")
+    public void verifyTitleContains(String keyword) {
+        String SearchQuery = scenarioContext.getContext("SearchQuery",String.class);
+        Assertions.assertEquals(keyword,SearchQuery);
+        googlePage.assertPageTitle(keyword);
+    }
+
+    @When("I navigate to image search")
+    public void navigateToImageSearch() {
+        googlePage.imageSearch();
+    }
+
+    @Then("I should see image results for {string}")
+    public void verifyImageResults(String keyword) {
+        String SearchQuery = scenarioContext.getContext("SearchQuery",String.class);
+        Assertions.assertEquals(keyword,SearchQuery);
+        googlePage.assertPageContent(keyword);
+    }
 
 }
+
+
+
+

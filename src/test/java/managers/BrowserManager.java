@@ -4,42 +4,47 @@ import com.microsoft.playwright.*;
 import enums.BrowserType;
 import enums.EnvironmentType;
 
-import java.nio.file.Paths;
 
 public class BrowserManager {
     private static BrowserManager instance;
     private Playwright playwright;
     private Browser browser;
-    private BrowserContext context;
+
+    // ThreadLocal variables for isolated BrowserContext and Page per thread
+    private ThreadLocal<BrowserContext> threadLocalContext = new ThreadLocal<>();
+    private ThreadLocal<Page> threadLocalPage = new ThreadLocal<>();
 
     private BrowserManager() {
-        // Private constructor for singleton pattern
+        this.playwright = Playwright.create();
     }
 
-    public static BrowserManager getInstance() {
+    public static synchronized BrowserManager getInstance() {
         if (instance == null) {
             instance = new BrowserManager();
         }
         return instance;
     }
 
-    // Create a new page with an isolated context, reusing the same browser instance
-    public Page createPage(BrowserType browserType, EnvironmentType environmentType) {
-        if (playwright == null) {
-            playwright = Playwright.create();
-        }
-
+    private synchronized Browser getBrowser(BrowserType browserType, EnvironmentType environmentType) {
         if (browser == null) {
             browser = createBrowser(browserType, environmentType);
         }
+        return browser;
+    }
 
-        if (context == null || context.pages().isEmpty()) {
-            context = browser.newContext();  // Create a new context for each test
-
-
+    public Page createPage(BrowserType browserType, EnvironmentType environmentType) {
+        // Initialize a new BrowserContext for each thread
+        if (threadLocalContext.get() == null) {
+            BrowserContext context = getBrowser(browserType, environmentType).newContext();
+            threadLocalContext.set(context);
         }
 
-        return context.newPage();
+        // Initialize a new Page for each thread
+        if (threadLocalPage.get() == null || threadLocalPage.get().isClosed()) {
+            Page page = threadLocalContext.get().newPage();
+            threadLocalPage.set(page);
+        }
+        return threadLocalPage.get();
     }
 
     private Browser createBrowser(BrowserType browserType, EnvironmentType environmentType) {
@@ -47,9 +52,8 @@ public class BrowserManager {
             case LOCAL:
                 return createLocalBrowser(browserType);
             case REMOTE:
-                return createRemoteBrowser(browserType);
             case BROWSERSTACK:
-                return createBrowserStackBrowser(browserType);
+                throw new UnsupportedOperationException("Remote browsers are not supported yet.");
             default:
                 throw new IllegalArgumentException("Unsupported environment type: " + environmentType);
         }
@@ -59,34 +63,23 @@ public class BrowserManager {
         com.microsoft.playwright.BrowserType.LaunchOptions launchOptions =
                 new com.microsoft.playwright.BrowserType.LaunchOptions().setHeadless(getHeadlessMode());
 
-        try {
-            switch (browserType) {
-                case CHROME:
-                case EDGE:
-                    return launchChromiumBrowser(browserType, launchOptions);
-                case FIREFOX:
-                    return playwright.firefox().launch(launchOptions);
-                case SAFARI:
-                    return playwright.webkit().launch(launchOptions);
-                default:
-                    throw new IllegalArgumentException("Unsupported browser type: " + browserType);
-            }
-        } catch (PlaywrightException e) {
-            System.err.println("Error launching browser: " + e.getMessage());
-            throw new RuntimeException("Failed to launch browser: " + browserType, e);
+        switch (browserType) {
+            case CHROME:
+            case EDGE:
+                return launchChromiumBrowser(browserType, launchOptions);
+            case FIREFOX:
+                return playwright.firefox().launch(launchOptions);
+            case SAFARI:
+                return playwright.webkit().launch(launchOptions);
+            default:
+                throw new IllegalArgumentException("Unsupported browser type: " + browserType);
         }
     }
 
     private Browser launchChromiumBrowser(BrowserType browserType, com.microsoft.playwright.BrowserType.LaunchOptions launchOptions) {
         if (browserType == BrowserType.EDGE) {
-            try {
-                launchOptions.setChannel("msedge");
-                return playwright.chromium().launch(launchOptions);
-            } catch (PlaywrightException e) {
-                System.out.println("Edge not available, falling back to Chrome.");
-            }
+            launchOptions.setChannel("msedge");
         }
-
         return playwright.chromium().launch(launchOptions);
     }
 
@@ -94,19 +87,14 @@ public class BrowserManager {
         return FileReaderManager.getInstance().getConfigReader().isHeadlessMode();
     }
 
-    private Browser createRemoteBrowser(BrowserType browserType) {
-        throw new UnsupportedOperationException("Remote browser creation not implemented yet");
-    }
-
-    private Browser createBrowserStackBrowser(BrowserType browserType) {
-        throw new UnsupportedOperationException("BrowserStack browser creation not implemented yet");
-    }
-
-    // Close the browser only after all tests are finished
     public void closeBrowser() {
-        if (context != null) {
-            context.close();
-            context = null;
+        if (threadLocalPage.get() != null) {
+            threadLocalPage.get().close();
+            threadLocalPage.remove();
+        }
+        if (threadLocalContext.get() != null) {
+            threadLocalContext.get().close();
+            threadLocalContext.remove();
         }
         if (browser != null) {
             browser.close();

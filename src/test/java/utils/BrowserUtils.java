@@ -1,4 +1,4 @@
-package utilities;
+package utils;
 
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Page;

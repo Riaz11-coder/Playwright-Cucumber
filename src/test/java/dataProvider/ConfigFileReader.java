@@ -2,7 +2,7 @@ package dataProvider;
 
 import enums.BrowserType;
 import enums.EnvironmentType;
-import utilities.PasswordUtils;
+import utils.PasswordUtils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

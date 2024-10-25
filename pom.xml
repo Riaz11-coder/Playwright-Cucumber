@@ -11,8 +11,29 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <cucumber.version>7.14.1</cucumber.version>
+        <junit5.version>5.11.2</junit5.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+        <dependencyManagement>
+            <dependencies>
+                <dependency>
+                    <groupId>org.junit</groupId>
+                    <artifactId>junit-bom</artifactId>
+                    <version>${junit5.version}</version>
+                    <type>pom</type>
+                    <scope>import</scope>
+                </dependency>
+                <dependency>
+                    <groupId>io.cucumber</groupId>
+                    <artifactId>cucumber-bom</artifactId>
+                    <version>${cucumber.version}</version>
+                    <type>pom</type>
+                    <scope>import</scope>
+                </dependency>
+            </dependencies>
+        </dependencyManagement>
+
 
 
     <dependencies>
@@ -22,6 +43,30 @@
             <artifactId>playwright</artifactId>
             <version>1.47.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite-api -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite-api</artifactId>
+            <version>1.11.3</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite-engine -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite-engine</artifactId>
+            <version>1.11.3</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -40,14 +85,14 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-junit-platform-engine</artifactId>
-            <version>7.20.1</version>
+            <version>7.14.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>7.20.1</version>
+            <version>7.14.0</version>
         </dependency>
 
         <dependency>
@@ -55,6 +100,11 @@
             <artifactId>cucumber-picocontainer</artifactId>
             <version>7.11.1</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>gherkin</artifactId>
         </dependency>
 
     </dependencies>
@@ -80,18 +130,35 @@
 
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M5</version>
+                    <version>3.0.0-M7</version>
                         <configuration>
                             <includes>
                                 <include>**/*TestRunner*.java</include>
                             </includes>
+                            <parallel>classesAndMethods</parallel>
+                            <useUnlimitedThreads>true</useUnlimitedThreads>
                         </configuration>
+                <executions>
+                    <execution>
+                        <id>parallel</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.0.0-M7</version>
+                <configuration>
+                    <includes>
+                        <include>**/*TestRunner*.java</include>
+                    </includes>
+                    <parallel>classesAndMethods</parallel>
+                    <useUnlimitedThreads>true</useUnlimitedThreads>
+                </configuration>
                 <executions>
                     <execution>
                         <id>integration-tests</id>
@@ -128,7 +195,7 @@
                                 </jsonFiles>
 
                                 <!-- Advanced Configuration Options -->
-                                <mergeFeaturesById>false</mergeFeaturesById> <!-- Keep false for scenario outline clarity -->
+                                <mergeFeaturesById>false</mergeFeaturesById>
                                 <mergeFeaturesWithRetest>false</mergeFeaturesWithRetest>
                                 <checkBuildResult>false</checkBuildResult>
 

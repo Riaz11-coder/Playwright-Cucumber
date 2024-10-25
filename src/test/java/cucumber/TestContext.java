@@ -6,63 +6,51 @@ import managers.FileReaderManager;
 import managers.PageObjectManager;
 
 public class TestContext {
-    private static volatile TestContext instance;
     private BrowserManager browserManager;
     private Page page;
     private PageObjectManager pageObjectManager;
     private ScenarioContext scenarioContext;
 
+
+    // Constructor initializing the BrowserManager and ScenarioContext
     public TestContext() {
-        browserManager = BrowserManager.getInstance();
-        page = browserManager.createPage(FileReaderManager.getInstance().getConfigReader().getBrowser(), FileReaderManager.getInstance().getConfigReader().getEnvironment());
-        pageObjectManager = new PageObjectManager(page);
+        browserManager = BrowserManager.getInstance();// Use the singleton instance
         scenarioContext = new ScenarioContext();
     }
 
-    public static TestContext getInstance() {
-        if (instance == null) {
-            synchronized (TestContext.class) {
-                if (instance == null) {
-                    instance = new TestContext();
-                }
-            }
-        }
-        return instance;
-    }
+    // Lazy initialization for PageObjectManager
     public PageObjectManager getPageObjectManager() {
+        if (pageObjectManager == null) {
+            pageObjectManager = new PageObjectManager(getPage());
+        }
         return pageObjectManager;
+    }
+
+    // Lazy initialization for Page
+    public Page getPage() {
+        if (page == null || page.isClosed()) {
+            page = browserManager.createPage(
+                    FileReaderManager.getInstance().getConfigReader().getBrowser(),
+                    FileReaderManager.getInstance().getConfigReader().getEnvironment()
+            );
+        }
+        return page;
     }
 
     public ScenarioContext getScenarioContext() {
         return scenarioContext;
     }
 
-    public BrowserManager getBrowserManager() {return browserManager;
+    public BrowserManager getBrowserManager() {
+        return browserManager;
     }
 
-    public Page getPage() {
-        if(page == null || page.isClosed()) {
-            page = browserManager.createPage(FileReaderManager.getInstance().getConfigReader().getBrowser(), FileReaderManager.getInstance().getConfigReader().getEnvironment());
-        }
-        return page;
-    }
 
-    public static void reset() {
-        synchronized (TestContext.class) {
-            if (instance != null) {
-                instance.cleanUp();
-                instance.getScenarioContext().clearContext(); // Clear context on reset
-                instance = null;
-            }
-        }
-    }
+    // Clean-up logic for closing page and browser after the test finishes
     public void cleanUp() {
         if (page != null) {
             page.close();
         }
-        browserManager.closeBrowser();
-
+        browserManager.closeBrowser();  // Close the browser after all tests
     }
-
-
 }

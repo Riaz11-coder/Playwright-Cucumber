@@ -1,5 +1,7 @@
 package hooks;
 
+import cucumber.TestContext;
+import io.cucumber.java.AfterAll;
 import io.cucumber.java.BeforeAll;
 
 public class GlobalHooks {
@@ -9,4 +11,6 @@ public class GlobalHooks {
         System.out.println("Cleaning up old trace files...");
         TraceCleaner.clearOldTraces();  // Clean traces before running all tests
     }
+
+
 }

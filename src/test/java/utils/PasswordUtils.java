@@ -1,7 +1,6 @@
-package utilities;
+package utils;
 
 import java.util.Base64;
-import java.util.Properties;
 
 public class PasswordUtils {
 
